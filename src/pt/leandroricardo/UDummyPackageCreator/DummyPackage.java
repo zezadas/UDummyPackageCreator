@@ -24,11 +24,11 @@ public class DummyPackage {
 	private String version;				//	Version of the package
 	
 	public DummyPackage(String specFileName){
-		this.setSpecFileName(specFileName);
+		//this.setSpecFileName(specFileName);
 	}
 	
 	public DummyPackage(){
-		this.setSpecFileName("spec");		//	Spec is the default file name
+		//this.setSpecFileName("spec");		//	Spec is the default file name
 	}
 
 	
