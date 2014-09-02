@@ -11,7 +11,10 @@ import java.util.Scanner;
 public class DummyPackageCreator {
 
 	/*
-	 * 		main:	This method initiates the action's flow.
+	 * 		DummyPackageCreator
+	 * 		
+	 * 		Changelog:	First commit				2014/09/02
+	 * 					First integrity checks
 	 */
 	public static void main(String[] args) {
 		
@@ -22,6 +25,7 @@ public class DummyPackageCreator {
 			
 			/*Check permissions*/
 			checkPermissions();
+			
 		}catch(OperativeSystemException o){
 			System.out.println(o);
 		}catch(NoEnoughPermissionsException n){
@@ -56,7 +60,7 @@ public class DummyPackageCreator {
 	}
 	
 	/*
-	 * 	standardsVersion():
+	 * 	checkStandardsVersion():
 	 * 		This function will verify if the control file has a new version.
 	 * 		It consists in:
 	 * 		- Build the file using equivs-control;
@@ -64,7 +68,7 @@ public class DummyPackageCreator {
 	 * 		- Find version;
 	 * 		- Check if the string is greater (it is greater if the version is greater)
 	 */
-	public static String standardsVersion() throws StandardsVersionException{
+	public static void standardsVersion(String incomingFileVersion) throws StandardsVersionException{
 		String standardsVersion = null;
 		
 		try {
@@ -82,23 +86,21 @@ public class DummyPackageCreator {
 			p = new ProcessBuilder("/bin/bash","-c","rm version");
 			p.start();
 			
-
+			if(standardsVersion.compareToIgnoreCase(incomingFileVersion) < 0)
+				throw new StandardsVersionException("The file version is older than equivs-control program.");
+			else if(standardsVersion.compareToIgnoreCase(incomingFileVersion) > 0)
+				throw new StandardsVersionException("The file version is newer than equivs-control program.");
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return standardsVersion;
 	}
 	
 	/*
 	 * 	checkPermissions():
 	 * 		This function will verify if the working directory has enough permissions.
-	 * 		Only reading and writing permissions are needed.
-	 * 
-	 * 		Returns:
-	 * 	    ok  rw | x (not used)
-	 * 		0   12 | 3			
+	 * 		Only reading and writing permissions are needed.		
 	 */
 	public static void checkPermissions() throws NoEnoughPermissionsException{
 		File wd = new File(".");
