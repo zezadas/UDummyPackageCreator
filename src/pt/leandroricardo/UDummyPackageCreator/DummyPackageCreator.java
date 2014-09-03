@@ -17,14 +17,40 @@ public class DummyPackageCreator {
 	 * 					First integrity checks
 	 */
 	public static void main(String[] args) {
+		String [] config = {"","","",""};
+		String term;
+		String secTerm;
+		String homePath;
+		String userName;
 		
 		/*Integrity checks*/
 		try{
 			/*Check operative system and main system preferences*/
 			checkOperativeSystem();
 			
+			try {
+				config = readConfigurationFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 			/*Check permissions*/
 			checkPermissions();
+			
+			/*Register attributes*/
+			term = config[0];
+			secTerm = config[1];
+			homePath = config[2];
+			userName = config[3];
+			
+			/*A second validation in terminal application*/
+			if(term.equals("")){
+				if(secTerm.equals("")){
+					term = "xterm";						/* XTerm is available in almost every distros*/
+				}
+				else{
+					term = secTerm;
+				}
+			}
 			
 		}catch(OperativeSystemException o){
 			System.out.println(o);
@@ -38,6 +64,44 @@ public class DummyPackageCreator {
 	}
 	
 	/*
+	 * 	readConfigurationFile():
+	 * 		This feature is not fully completed yet, altough I've already chosen a format:
+	 * 		When this program is installed, a script called config-gen.sh will write out a file separated by '\n'
+	 * 		Format:
+	 * 			<colorterminal>			> will be used for execute interactive commands
+	 * 			<term>					> will be used for backup, if $COLORTERMINAL is not defined
+	 * 			<user's home path>		> reserved for future features
+	 * 			<username>				> reserved for future features
+	 * 		
+	 * 		It's not the best configuration utily, but it does the job without human intervention
+	 * 					
+	 */
+	public static String[] readConfigurationFile() throws FileNotFoundException{
+		String [] list = {"","","",""};
+		
+		File config = new File("config");
+		Scanner sc;
+		
+		if(!config.exists()){
+			throw new FileNotFoundException();
+		}
+		
+		sc = new Scanner(config);
+		
+		for(int  i = 0; i < list.length; i++){
+			if((list[i] = sc.nextLine()).matches("<>")){
+				list[i] = "";
+			}
+			else{
+				list[i] = list[i].split("<")[1].split(">")[0];
+			}
+		}
+		
+		sc.close();
+		return list;
+	}
+	
+	/*
 	 * 	checkOperativeSystem(): int
 	 * 		This function check if the operative system is Ubuntu or a Debian Based distro.
 	 * 		Linux Mint is not supported.
@@ -45,15 +109,25 @@ public class DummyPackageCreator {
 	 */
 	public static void checkOperativeSystem() throws OperativeSystemException{		
 		if(System.getProperty("os.name").equals("Linux")){
-			//Get environment variables
-			Map<String,String> env = System.getenv();
-			
-			//Verify if user is either using debian or ubuntu
-			if(!env.get("DESKTOP_SESSION").contains("ubuntu") && 
-					!!env.get("DESKTOP_SESSION").contains("debian")){
-				throw new OperativeSystemException("The distro " + env.get("DESKTOP_SESSION") + " is not supported.");
+			//Verify if user is either using debian, ubuntu  or linux mint
+			try {
+				Process r =Runtime.getRuntime().exec("cat /etc/issue");
+				Scanner in = new Scanner(r.getInputStream());
+				String str;
+				
+				if((str = in.nextLine()) != null){
+					if(!str.toLowerCase().contains("debian")
+							&&	!str.toLowerCase().contains("ubuntu")
+								&&	!str.toLowerCase().contains("mint")){
+						in.close();
+						throw new OperativeSystemException("The operative system is not supported");
+					}
+				}
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
 		}
 		else{
 			throw new OperativeSystemException("The operative system is not Linux");
