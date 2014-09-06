@@ -58,12 +58,15 @@ public class SpecFileOperator {
 				line = in.nextLine();
 				
 				if(line.contains("Package: ")){
-					packageName = line.split("Package: ")[1];
+					packageName = line.split("Package: ")[1].trim();
 				}
 				
 				if(line.contains("Version: ")){
-					packageVersion = line.split("Version: ")[1];
-					break;
+					packageVersion = line.split("Version: ")[1].trim();
+					/*break;		dirty workaround because the package version is always the second to appear.
+					 * 				the problem is: if there is no package version, kaputz
+					 * 				TODO:	find a solution
+					 */
 				}
 			}
 			
@@ -179,8 +182,8 @@ public class SpecFileOperator {
 	 * 	This function opens the changelog file with the text editor
 	 * 	@param			DummyPackage object that contains all needed information
 	 */
-	public static void editChangelog(DummyPackage d){
-		ProcessBuilder pb = new ProcessBuilder("nano",d.getFolderName()+"/debian/changelog");
+	public void editChangelog(DummyPackage d){
+		ProcessBuilder pb = new ProcessBuilder("vim",d.getFolderName()+"/debian/changelog");
 		
 		pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
 		pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
@@ -201,8 +204,8 @@ public class SpecFileOperator {
 	 * 	This function rebuild the debian package executing debuild.
 	 * 	@param			DummyPackage object that contains all needed information
 	 */
-	public static void rebuildPackage(DummyPackage d){
-		ProcessBuilder pb = new ProcessBuilder("debuild","-s");
+	public void rebuildPackage(DummyPackage d){
+		ProcessBuilder pb = new ProcessBuilder("debuild","-S");
 		/*Sets directory to the new directory*/
 		pb.directory(new File(d.getFolderName()));
 		
@@ -220,8 +223,8 @@ public class SpecFileOperator {
 	 * 	This function sends the package to the PPA.
 	 * 	@param			URL of PPA
 	 */
-	public static void sendToLauchpadPPA(String url){
-		ProcessBuilder pb = new ProcessBuilder("dput",url);
+	public void sendToLauchpadPPA(String url, DummyPackage d){
+		ProcessBuilder pb = new ProcessBuilder("dput",url,d.getName()+"_"+d.getVersion()+"_"+"source.changes");
 		
 		// TODO Fix me
 		pb.redirectInput(ProcessBuilder.Redirect.INHERIT);

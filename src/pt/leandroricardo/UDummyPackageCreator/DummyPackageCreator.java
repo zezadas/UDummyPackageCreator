@@ -10,6 +10,7 @@ public class DummyPackageCreator {
 
 	public static void main(String[] args) {
 		String filename;
+		String url;
 		int op = -1;
 		Scanner in = new Scanner(System.in);
 		SpecFileOperator operator = null;
@@ -28,6 +29,10 @@ public class DummyPackageCreator {
 				System.out.println("2. Open spec file");
 				System.out.println("3. Edit spec file");
 				System.out.println("4. Build package");
+				System.out.println("5. Extract package");
+				System.out.println("6. Edit package's changelog");
+				System.out.println("7. Rebuild package");
+				System.out.println("8. Send package to Launchpad");
 				System.out.println("0. Exit");
 				System.out.print(">");
 				op = in.nextInt();
@@ -79,7 +84,27 @@ public class DummyPackageCreator {
 						break;
 					case 5:
 						if(ready){
-							operator.buildPackage(cPackage);
+							operator.extractPackage(cPackage);
+						}
+						break;
+					case 6:
+						if(ready){
+							operator.editChangelog(cPackage);
+						}
+						break;
+					case 7:
+						if(ready){
+							operator.rebuildPackage(cPackage);
+						}
+						break;
+					case 8:
+						if(ready){
+							/*Query user for the launchpad PPA*/
+							System.out.println("Please, write out the spec file name:");
+							System.out.print(">");
+							
+							url = in.nextLine();
+							operator.sendToLauchpadPPA(url,cPackage);
 						}
 						break;
 					case 0:	return;
