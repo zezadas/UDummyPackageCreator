@@ -4,33 +4,39 @@ package pt.leandroricardo.UDummyPackageCreator;
  * 		Class Name:		DummyPackage
  * 		Version:		14.09.01
  * 		Description:	This java class implements an abstraction for dummy packages.
+ * 						The  main reason of this abstraction is to serialize this object in future releases.
  * 		
- * 		Changelog:		First Version									2014/09/01
  */
-
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.Scanner;
-
 
 public class DummyPackage { 
 	
-	private String specFileName;		//	Output from equivs-control program
+	private String name;					/*Package's name*/
+	private String version;					/*Package's version*/
+	private String controlFileName;			/*Package's control file name*/
+	private String folderName;				/*Package's folder name*/
 	
-	private String packageName;			//	Name of the package
-	private String version;				//	Version of the package
-	
-	public DummyPackage(String specFileName){
-		//this.setSpecFileName(specFileName);
-	}
-	
-	public DummyPackage(){
-		//this.setSpecFileName("spec");		//	Spec is the default file name
+	public DummyPackage(String controlFileName,String name, String version){
+		this.name = name;
+		this.version = version;
+		this.controlFileName = controlFileName;
+		
+		folderName = name + "-" + version;
 	}
 
+	public String getName(){
+		return name;
+	}
 	
+	public String getVersion(){
+		return version;
+	}
+
+	public String getControlFileName() {
+		return controlFileName;
+	}
 	
+	public String getFolderName() {
+		return folderName;
+	}
+
 }

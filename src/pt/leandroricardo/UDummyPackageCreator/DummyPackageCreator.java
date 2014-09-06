@@ -1,104 +1,99 @@
 package pt.leandroricardo.UDummyPackageCreator;
 
 import pt.leandroricardo.UDummyPackageCreator.Exceptions.*;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Scanner;
 
 public class DummyPackageCreator {
 
-	/*
-	 * 		DummyPackageCreator
-	 * 		
-	 * 		Changelog:	First commit				2014/09/02
-	 * 					First integrity checks
-	 */
 	public static void main(String[] args) {
-		String [] config = {"","","",""};
-		String term;
-		String secTerm;
-		String homePath;
-		String userName;
+		String filename;
+		int op = -1;
+		Scanner in = new Scanner(System.in);
+		SpecFileOperator operator = null;
+		File spec = null;
+		DummyPackage cPackage = null;
+		Boolean ready = false;
 		
-		/*Integrity checks*/
 		try{
 			/*Check operative system and main system preferences*/
 			checkOperativeSystem();
-			
-			try {
-				config = readConfigurationFile();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-			/*Check permissions*/
-			checkPermissions();
-			
-			/*Register attributes*/
-			term = config[0];
-			secTerm = config[1];
-			homePath = config[2];
-			userName = config[3];
-			
-			/*A second validation in terminal application*/
-			if(term.equals("")){
-				if(secTerm.equals("")){
-					term = "xterm";						/* XTerm is available in almost every distros*/
+
+			/*Main program flow*/
+			do{
+				System.out.println("UDummyPackageCreator Interactive Mode");
+				System.out.println("1. Create default spec file");
+				System.out.println("2. Open spec file");
+				System.out.println("3. Edit spec file");
+				System.out.println("4. Build package");
+				System.out.println("0. Exit");
+				System.out.print(">");
+				op = in.nextInt();
+				in.nextLine();
+				
+				switch(op){
+					case 1:	
+						/*Query user for a file name*/
+						System.out.println("Please, write out the spec file name:");
+						System.out.print(">");
+						
+						filename = in.nextLine();
+						
+						spec = new File(filename);
+						operator = new SpecFileOperator(spec);
+						cPackage = operator.createDefaultSpecFile(spec);
+						/*Checks if file exists, and if file e readable and writable*/
+						isFileConsistent(spec);
+						
+						
+						/*Verifies if the DummyPackage was successfully created*/
+						ready = operator.getStatus();
+						break;
+					case 2:	
+						/*Query user for a file name*/
+						System.out.println("Please, write out the spec file name:");
+						System.out.print(">");
+						
+						filename = in.nextLine();
+						spec = new File(filename);
+						
+						/*Checks if file exists, and if file e readable and writable*/
+						isFileConsistent(spec);
+						operator = new SpecFileOperator(spec);
+						cPackage = operator.openSpecFile(spec);
+						
+						/*Verifies if the DummyPackage was successfully created*/
+						ready = operator.getStatus();
+						break;
+					case 3:
+						if(ready){
+							operator.editSpecFile(spec);
+						}
+						break;
+					case 4:
+						if(ready){
+							operator.buildPackage(cPackage);
+						}
+						break;
+					case 5:
+						if(ready){
+							operator.buildPackage(cPackage);
+						}
+						break;
+					case 0:	return;
 				}
-				else{
-					term = secTerm;
-				}
-			}
+			}while(true);
 			
-		}catch(OperativeSystemException o){
+		}catch(OperativeSystemException o){			//TODO Workarounds
 			System.out.println(o);
 		}catch(NoEnoughPermissionsException n){
 			System.out.println(n);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
-		
-		/*Main program flow*/
-		
-		
-	}
-	
-	/*
-	 * 	readConfigurationFile():
-	 * 		This feature is not fully completed yet, altough I've already chosen a format:
-	 * 		When this program is installed, a script called config-gen.sh will write out a file separated by '\n'
-	 * 		Format:
-	 * 			<colorterminal>			> will be used for execute interactive commands
-	 * 			<term>					> will be used for backup, if $COLORTERMINAL is not defined
-	 * 			<user's home path>		> reserved for future features
-	 * 			<username>				> reserved for future features
-	 * 		
-	 * 		It's not the best configuration utily, but it does the job without human intervention
-	 * 					
-	 */
-	public static String[] readConfigurationFile() throws FileNotFoundException{
-		String [] list = {"","","",""};
-		
-		File config = new File("config");
-		Scanner sc;
-		
-		if(!config.exists()){
-			throw new FileNotFoundException();
-		}
-		
-		sc = new Scanner(config);
-		
-		for(int  i = 0; i < list.length; i++){
-			if((list[i] = sc.nextLine()).matches("<>")){
-				list[i] = "";
-			}
-			else{
-				list[i] = list[i].split("<")[1].split(">")[0];
-			}
-		}
-		
-		sc.close();
-		return list;
+		in.close();
 	}
 	
 	/*
@@ -143,7 +138,7 @@ public class DummyPackageCreator {
 	 * 		- Find version;
 	 * 		- Check if the string is greater (it is greater if the version is greater)
 	 */
-	public static void standardsVersion(String incomingFileVersion) throws StandardsVersionException{
+	public static void checkStandardsVersion(String incomingFileVersion) throws StandardsVersionException{
 		String standardsVersion = null;
 		
 		try {
@@ -173,18 +168,19 @@ public class DummyPackageCreator {
 	}
 	
 	/*
-	 * 	checkPermissions():
-	 * 		This function will verify if the working directory has enough permissions.
-	 * 		Only reading and writing permissions are needed.		
+	 *	This function will verify if the a given file has enough permissions.
+	 *	
 	 */
-	public static void checkPermissions() throws NoEnoughPermissionsException{
-		File wd = new File(".");
+	public static void isFileConsistent(File file) throws NoEnoughPermissionsException, FileNotFoundException{
+		if(!file.exists()){
+			throw new FileNotFoundException();
+		}
 		
-		if(!wd.canRead()){
+		if(!file.canRead()){
 			throw new NoEnoughPermissionsException("No enough reading permissions");
 		}
 		
-		if(!wd.canWrite()){
+		if(!file.canWrite()){
 			throw new NoEnoughPermissionsException("No enough writing permissions");
 		}
 	}
