@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+/*
+ *	This class is the main frontend.
+ */
+
 public class DummyPackageCreator {
 
 	public static void main(String[] args) {
@@ -114,18 +118,21 @@ public class DummyPackageCreator {
 		}catch(OperativeSystemException o){			//TODO Workarounds
 			System.out.println(o);
 		}catch(NoEnoughPermissionsException n){
-			System.out.println(n);
+			System.out.println("Check file permission using \"ls -l\" and change it using \"chmod +rw .\"");
+			System.out.println("Will now exit.");
+			System.exit(-1);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("The filename wasn't found. Please, try again.");
 		}
 		in.close();
 	}
 	
 	/*
-	 * 	checkOperativeSystem(): int
-	 * 		This function check if the operative system is Ubuntu or a Debian Based distro.
-	 * 		Linux Mint is not supported.
-	 * 		
+	 *	This function check if the operative system is correct.
+	 *	The system requirments for this program are:
+	 *	- Use Linux
+	 *	- Use Ubuntu or a Debian Based distro;
+	 *	TODO: test
 	 */
 	public static void checkOperativeSystem() throws OperativeSystemException{		
 		if(System.getProperty("os.name").equals("Linux")){
@@ -155,13 +162,12 @@ public class DummyPackageCreator {
 	}
 	
 	/*
-	 * 	checkStandardsVersion():
-	 * 		This function will verify if the control file has a new version.
-	 * 		It consists in:
-	 * 		- Build the file using equivs-control;
-	 * 		- Read it.
-	 * 		- Find version;
-	 * 		- Check if the string is greater (it is greater if the version is greater)
+	 *	This function will verify if the control file has a new version.
+	 * 	It consists in build the file using equivs-control, read it, find version and check if the string is greater 
+	 * (it is greater if the version is greater)
+	 * 	@param			Incoming file version, in a string
+	 * 	
+	 * TODO: test consistency and mechanics
 	 */
 	public static void checkStandardsVersion(String incomingFileVersion) throws StandardsVersionException{
 		String standardsVersion = null;
