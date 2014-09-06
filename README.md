@@ -16,5 +16,5 @@ It was intendeed for personal use, but I think it maybe useful for some of you.
 
 ### Instructions
 * Create a new folder
-* To execute, change your working directory to JAR file location, writing 'java -jar UDummyPackageCreator.jar'
+* Change your working directory to the JAR file location, and execute 'java -jar UDummyPackageCreator.jar'
 * Follow the interactive program flow (Step one to Step 2, and vice-versa)
