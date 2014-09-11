@@ -63,9 +63,9 @@ public class SpecFileOperator {
 				
 				if(line.contains("Version: ")){
 					packageVersion = line.split("Version: ")[1].trim();
-					/*break;		dirty workaround because the package version is always the second to appear.
-					 * 				the problem is: if there is no package version, kaputz
-					 * 				TODO:	find a solution
+					/*  dirty workaround because the package version is always the second to appear.
+					 *  the problem is: if there is no package version, kaputz
+					 *  TODO:	find a solution
 					 */
 				}
 			}
