@@ -38,11 +38,32 @@ public class Utility {
 
         return true;
     }
+    
+    /**
+     * This function checks if the distro is Debian or Ubuntu
+     * @return String with name
+     * TODO: clean bad characters
+     */
+    public static String getDistro() {
+        Scanner in;
+        String distroName = "";
+        
+        try {
+            Process r = Runtime.getRuntime().exec("cat /etc/issue");
+            in = new Scanner(r.getInputStream());
+
+            if ((distroName = in.nextLine()) != null) {
+                distroName = distroName.split("\r")[0].trim();
+            }
+            in.close();
+        } catch (IOException e) {
+        }
+
+        return distroName;
+    }
 
     /**
-     *	This function will verify if the control file has a new version.
-     * 	It consists in build the file using equivs-control, read it, find version and check if the string is greater 
-     *  (it is greater if the version is greater)
+     *	This function return the distribution name..
      * 
      *  @param incomingFileVersion, incoming file version, as a string
      *  @return status, Positive value if the the outside file's version is bigger
