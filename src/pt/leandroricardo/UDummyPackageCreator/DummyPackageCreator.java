@@ -24,10 +24,7 @@ public class DummyPackageCreator {
     //        }
         
         /*Read terminal parameters and run program*/
-        if(args.length == 2 && args[0].length() == 2){
-            
-        }
-        else{
+        if(args.length != 3 || args[0].length() != 2){
             showHelp();
             return;
         }
@@ -52,22 +49,11 @@ public class DummyPackageCreator {
         
         switch(args[0].charAt(1)){
                 case 'g':
-                    
-                    
+                    dp = build(operator, specFile);
+                    operator.sendToLauchpadPPA(args[2], dp);
                     break;
                 case 'b':
-                    operator.createDefaultSpecFile(specFile);
-                    //operator.openSpecFile(specFile);
-                    operator.editSpecFile(specFile);
-                    
-                    /*load dummy package object*/
-                    dp = operator.loadDummyPackage(specFile);
-                    
-                    operator.buildPackage(dp);
-                    operator.extractPackage(dp);
-                    operator.extractPackage(dp);
-                    operator.rebuildPackage(dp);
-                    
+                    dp = build(operator, specFile);
                     break;
                 default:
                     System.out.println("Wrong option.");
@@ -77,9 +63,28 @@ public class DummyPackageCreator {
     
     public static void showHelp(){
         System.out.println("UDummyPackageCreator");
-        System.out.println("Usage: udummy [OPTION] ... [FILE]");
+        System.out.println("Usage: udummy -b [OPTION] [FILE] ");
+        System.out.println("Usage: udummy -g [OPTION] [FILE] [URL] ");
         System.out.println("-b    Build package from the start (creating a new spec file)");
-        //System.out.println("-g    Build package from spec file and send");
+        System.out.println("-g    Build package from spec file and send");
         
+    }
+    
+    public static DummyPackage build(SpecFileOperator operator, File specFile) {
+        DummyPackage dp;
+        
+        operator.createDefaultSpecFile(specFile);
+        //operator.openSpecFile(specFile);
+        operator.editSpecFile(specFile);
+
+        /*load dummy package object*/
+        dp = operator.loadDummyPackage(specFile);
+
+        operator.buildPackage(dp);
+        operator.extractPackage(dp);
+        operator.extractPackage(dp);
+        operator.rebuildPackage(dp);
+        
+        return dp;
     }
 }
