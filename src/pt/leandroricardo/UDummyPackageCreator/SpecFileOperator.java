@@ -88,16 +88,12 @@ public class SpecFileOperator {
             while (in.hasNextLine()) {
                 line = in.nextLine();
 
-                if (line.contains("Package: ")) {
+                if (line.contains("Package: ") && line.charAt(0) != '#') {
                     packageName = line.split("Package: ")[1].trim();
                 }
 
-                if (line.contains("Version: ")) {
+                if (line.contains("Version: ") && line.charAt(0) != '#' && !line.contains("Standards-Version")) {
                     packageVersion = line.split("Version: ")[1].trim();
-                    /*  dirty workaround because the package version is always the second to appear.
-                     *  the problem is: if there is no package version, kaputz
-                     *  TODO:	find a solution
-                     */
                 }
             }
 
