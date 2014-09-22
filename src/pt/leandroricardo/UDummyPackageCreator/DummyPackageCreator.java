@@ -63,6 +63,7 @@ public class DummyPackageCreator {
             return;
         }
         
+        /*Update function choice*/
         funct = args[0].charAt(1);
         
         /*Check second argument: file*/
@@ -82,7 +83,7 @@ public class DummyPackageCreator {
         }
         
         /*Check server's URL - if the number of arguments is valid*/
-        if(args[0].charAt(2) == 'g'){
+        if(funct == 'g'){
         	if(args.length == 3){
         		if(!args[2].startsWith("ppa") && !args[2].startsWith("http")){
             		System.out.println("Bad server URL. Please, try again");
@@ -90,7 +91,6 @@ public class DummyPackageCreator {
                     return;
             	}
         		url = args[2];
-            	funct = args[0].charAt(2);
         	}
         	else{
         		System.out.println("No URL found.");
@@ -102,27 +102,7 @@ public class DummyPackageCreator {
         /**************************************         End of argument validation            *******************************************/
         
         /**************************************           Start of the program flow           *******************************************/
-        
-        
-        /*If user wants to open an existing file*/
-        if(funct == 'o'){
-        	
-        	/*Verifies file consistency*/
-        	try {
-        		Utility.isFileConsistent(specFile);
-        	}catch (NoEnoughPermissionsException | FileNotFoundException e) {
-        		System.out.println(e.getMessage());
-        		return;
-        	}
-        	
-        	/*Load information about the package*/
-        	dp = operator.loadDummyPackage(specFile);
-        	
-        	/*update*/
-        	funct = args[0].charAt(2);
-        }
-        
-        
+               
         switch(funct){
                 case 'g':
                     dp = build(operator, specFile);
@@ -145,11 +125,10 @@ public class DummyPackageCreator {
     
     public static void showHelp(){
         System.out.println("UDummyPackageCreator");
-        System.out.println("Usage: udummy [OPTIONS] [FILE] ");
-        System.out.println("Usage: udummy [OPTIONS] [FILE] [URL] ");
-        System.out.println("-oX    Open existing specfile (to be used with \"-b\" or \"-g\")");
+        System.out.println("Usage: java -jar UDummyPackageCreator OPTION FILE [URL] ");
         System.out.println("-b    Build package only");
         System.out.println("-g    Build package and send");
+        System.out.println("This program will create a specfile if the given file doesn't exist.");
     }
     
     public static DummyPackage build(SpecFileOperator operator, File specFile) {
