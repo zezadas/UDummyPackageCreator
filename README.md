@@ -1,6 +1,14 @@
 UDummyPackageCreator
 ====================
 
+UDummyPackageCreator
+Usage: udummy [OPTIONS] [FILE] 
+Usage: udummy [OPTIONS] [FILE] [URL] 
+-oX    Open existing specfile (to be used with "-b" or "-g")
+-b    Build package only
+-g    Build package and send
+
+
 A Dummy Package Creator for Ubuntu and Debian based distros, written in Java.
 
 This program can send packages to a Debian/Ubuntu repository (like Launchpad)
@@ -10,9 +18,8 @@ It was intendeed for personal use, but I think it may be useful for some of you.
 * First executable version
 * For use in terminal, in interactive mode
 
-## Upcoming second version
+## Second version
 * Non-interactive method
-* Batch processing
 
 ### Instructions
 * Create a new folder
