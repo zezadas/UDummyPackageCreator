@@ -16,7 +16,7 @@ public class SpecFileOperator {
 
     boolean ready;
 
-    public SpecFileOperator(File specfile) {
+    public SpecFileOperator() {
         /*initialize status*/
         this.setStatus(false);
     }
@@ -41,25 +41,14 @@ public class SpecFileOperator {
      *
      *
      */
-//	/**
-//	 * 	This function opens a default spec file. Opening means to create a DummyPackage Object by loading package's name and 
-//	 * version from the specified file.
-//	 * 	Sets the object to the state ready.
-//	 * 	@param			The File Object that represents the spec file
-//	 *      @return			DummyPackage Object, ready to be used
-//	 */
-//	public DummyPackage openSpecFile(File specfile) {
-//		DummyPackage e = operator.loadDummyPackage(specfile);
-//		this.setStatus(true);
-//		return e;
-//	}
+
     /*
      * 	This function creates a default spec file using equivs-control.
      * 	@param			The File Object that represents the spec file
      * 	@return 		DummyPackage Object, ready to be used
      */
-    public void createDefaultSpecFile(File specfile) {
-        ProcessBuilder pb = new ProcessBuilder("equivs-control", specfile.getName());
+    public DummyPackage createDefaultSpecFile(File specfile) {
+    	ProcessBuilder pb = new ProcessBuilder("equivs-control", specfile.getName());
 
         try {
             Process p = pb.start();
@@ -67,6 +56,9 @@ public class SpecFileOperator {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        
+        return this.loadDummyPackage(specfile);
+        
     }
 
     /**
@@ -101,7 +93,8 @@ public class SpecFileOperator {
         } catch (FileNotFoundException f) {
             System.out.println(f);
         }
-
+        
+        this.setStatus(true);
         return new DummyPackage(specfile.getName(), packageName, packageVersion);
     }
 
