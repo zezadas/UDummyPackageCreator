@@ -1,13 +1,6 @@
 UDummyPackageCreator
 ====================
-
-UDummyPackageCreator
-Usage: udummy [OPTIONS] [FILE] 
-Usage: udummy [OPTIONS] [FILE] [URL] 
--oX    Open existing specfile (to be used with "-b" or "-g")
--b    Build package only
--g    Build package and send
-
+<code>java -jar UDummyPackageCreator OPTIONS FILE [URL]</code>
 
 A Dummy Package Creator for Ubuntu and Debian based distros, written in Java.
 
