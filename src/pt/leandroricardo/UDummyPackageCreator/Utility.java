@@ -63,7 +63,7 @@ public class Utility {
     }
 
     /**
-     *	This function return the distribution name..
+     *	This function compares the file's standard-version with the one installed on the system.
      * 
      *  @param incomingFileVersion, incoming file version, as a string
      *  @return status, Positive value if the the outside file's version is bigger
