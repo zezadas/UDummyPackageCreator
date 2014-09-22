@@ -4,8 +4,7 @@ UDummyPackageCreator
 
 A Dummy Package Creator for Ubuntu and Debian based distros, written in Java.
 
-This program can send packages to a Debian/Ubuntu repository (like Launchpad)
-It was intendeed for personal use, but I think it may be useful for some of you.
+This program can send packages to a Debian/Ubuntu repository (like Launchpad).
 
 ## First version
 * First executable version
